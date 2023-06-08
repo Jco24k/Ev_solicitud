@@ -8,7 +8,7 @@ export interface Config {
         
     };
     query: {
-        page: number;
+        page_number: number;
         page_size: number;
         min_page: 1;          
     };

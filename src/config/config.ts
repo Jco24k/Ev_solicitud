@@ -16,7 +16,7 @@ export default registerAs(
         secret: process.env.JWT_SECRET
       },
       query: {
-        page: +process.env.PAGE_NUMBER || 1,
+        page_number: +process.env.PAGE_NUMBER || 1,
         page_size: +process.env.PAGE_SIZE || 10,
         min_page: 1,
       }
