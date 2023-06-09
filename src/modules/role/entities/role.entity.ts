@@ -1,10 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { v4 as uuid } from 'uuid';
 
 @Entity({ name: 'roles' })
 export class Role {
-
 
     @ApiProperty({
         maxLength: 36,
@@ -40,4 +38,5 @@ export class Role {
         nullable: false
     })
     isActive: boolean;
+
 }

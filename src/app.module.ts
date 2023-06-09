@@ -15,9 +15,9 @@ import { CommonModule } from './common/common.module';
       validationSchema: JoiValidationSchema 
     }),
     DatabaseModule,
-    UserModule,
-    RoleModule,
     CommonModule,
+    RoleModule,
+    UserModule,
 
   ],
 })

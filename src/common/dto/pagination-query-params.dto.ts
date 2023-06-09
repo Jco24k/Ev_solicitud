@@ -21,4 +21,13 @@ export class PaginationQueryParams {
   @IsIn([ 'active','inactive','all'])
   @IsOptional()
   state:  string;
+
+  // @ApiProperty({
+  //   required: false,
+  //   enum: [ ],
+  // })
+  // @IsIn([ ])
+  // @IsOptional()
+  // order:  string;
+
 }

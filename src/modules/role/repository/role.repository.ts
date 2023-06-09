@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from '../entities/Role.entity';
-import { FindOptionsWhere, In, Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, In, Repository } from 'typeorm';
 import { CreateRoleDto } from '../dto/create-Role.dto';
 import { UpdateRoleDto } from '../dto/update-Role.dto';
 import { GetOneOptions } from 'src/common/interfaces/get.one.options.interface';
@@ -11,24 +11,26 @@ import { GetOneOptions } from 'src/common/interfaces/get.one.options.interface';
 export class RoleRepository {
     constructor(
         @InjectRepository(Role)
-        private readonly RoleRepository: Repository<Role>,
+        private readonly roleRepository: Repository<Role>,
     ) { }
     async getAll(
         take?: number,
         skip?: number,
         whereOptions?: FindOptionsWhere<Role> | FindOptionsWhere<Role>[],
+        orderOptions?: FindOptionsOrder<Role>
     ) {
-        return await this.RoleRepository.find({
+        return await this.roleRepository.find({
             where: whereOptions,
             skip,
             take,
+            // order: orderOptions
         });
     }
     async getOne({
         id,
         error = true,
     }: GetOneOptions<string>) {
-        const role = await this.RoleRepository.findOne({
+        const role = await this.roleRepository.findOne({
             where: { id },
         });
         if (!role && error)
@@ -36,12 +38,12 @@ export class RoleRepository {
         return role;
     }
     async create(createRoleDto: CreateRoleDto) {
-        return await this.RoleRepository.save(createRoleDto);
+        return await this.roleRepository.save(createRoleDto);
     }
     async update(id: string, updateRoleDto: UpdateRoleDto) {
         const role = await this.getOne({ id });
         updateRoleDto.isActive = role.isActive;
-        await this.RoleRepository.update({ id }, {
+        await this.roleRepository.update({ id }, {
             ...updateRoleDto
         });
 
@@ -52,9 +54,20 @@ export class RoleRepository {
     async changeState(id: string, isActive: boolean) {
         const role = await this.getOne({ id });
         role.isActive = isActive;
-        await this.RoleRepository.save(role);
+        await this.roleRepository.save(role);
         return {
-            message: `Role ${!isActive?'deleted':'restored' } successfully `
-          }
+            message: `Role ${!isActive ? 'deleted' : 'restored'} successfully `
+        }
+    }
+
+
+
+    async verifyIdsExists(ids: string[]) {
+        const roles = await this.roleRepository.find({ where: { id: In(ids) } });
+        if (roles.length !== ids.length) {
+            throw new NotFoundException("Some Roles id's does not exists in DB")
+        }
+        return roles;
+
     }
 }

@@ -1,29 +1,27 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, ParseUUIDPipe, Put } from '@nestjs/common';
-import { RoleService } from './role.service';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Role } from './entities/Role.entity';
+import { UserService } from '../services/user.service';
+import { CreateUserDto } from '../dto/create/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { ApiResponse } from '@nestjs/swagger';
+import { User } from '../entities/User.entity';
 import { PaginationQueryParams } from 'src/common/dto/pagination-query-params.dto';
-import { CurrentPath } from 'src/common/interfaces/current.path.interface';
 
-@ApiTags(CurrentPath.role.toUpperCase())
-@Controller(CurrentPath.role)
-export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+@Controller('user')
+export class UserController {
+  constructor(private readonly userService: UserService) {}
 
- 
+  
   @ApiResponse({
     status: HttpStatus.CREATED,
-    type: Role,
+    type: User,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Data sent incorrectly',
   })
   @Post()
-  async create(@Body() createRoleDto: CreateRoleDto) {
-    return await this.roleService.create(createRoleDto);
+  async create(@Body() createUserDto: CreateUserDto) {
+    return await this.userService.create(createUserDto);
   }
 
   @ApiResponse({
@@ -32,29 +30,28 @@ export class RoleController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: [Role],
+    type: [User],
   })
   @Get()
   getAll(@Query() paginationQueryParams: PaginationQueryParams) {
-    return this.roleService.getAll(paginationQueryParams);
+    return this.userService.getAll(paginationQueryParams);
   }
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: Role,
+    type: User,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
   })
   @Get(':id')
   getOneById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.roleService.getOneById(id);
+    return this.userService.getOneById(id);
   }
-
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: Role,
+    type: User,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -63,11 +60,10 @@ export class RoleController {
   @Patch(':id')
   async update(
     @Param('id',ParseUUIDPipe) id: string,
-    @Body() updateRoleDto: UpdateRoleDto,
+    @Body() updateUserDto: UpdateUserDto,
   ) {
-    return await this.roleService.update(id, updateRoleDto);
+    return await this.userService.update(id, updateUserDto);
   }
-
 
   @ApiResponse({
     status: HttpStatus.OK,
@@ -77,9 +73,8 @@ export class RoleController {
   })
   @Delete(':id')
   async delete(@Param('id',ParseUUIDPipe) id: string) {
-    return await this.roleService.changeState(id,false);
+    return await this.userService.changeState(id,false);
   }
-
 
   @ApiResponse({
     status: HttpStatus.OK,
@@ -89,8 +84,6 @@ export class RoleController {
   })
   @Put('restore/:id')
   async restore(@Param('id',ParseUUIDPipe) id: string) {
-    return await this.roleService.changeState(id,true);
+    return await this.userService.changeState(id,true);
   }
-
-
 }
