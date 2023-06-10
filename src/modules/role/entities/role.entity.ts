@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Roles } from "src/common/interfaces/roles.enum";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({ name: 'roles' })
@@ -26,7 +27,7 @@ export class Role {
         unique: true,
         length: 40
     })
-    name: string;
+    name: Roles;
 
     @ApiProperty({
         default: true,

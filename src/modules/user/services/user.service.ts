@@ -58,14 +58,16 @@ export class UserService {
 
   async update(id: string, updateRoleDto: UpdateUserDto) {
     try {
-      const { roles, ...userDetails } = updateRoleDto
-      const rolesFind: Role[] = await this.roleRepository.verifyIdsExists(
-        roles.map(({ id }) => id)
-      )
+      const { roles } = updateRoleDto
+      if (roles) {
+        updateRoleDto.roles = await this.roleRepository.verifyIdsExists(
+          roles?.map(({ id }) => id) || []
+        )
+      }
 
       const userUpdate = await this.userRepository.update(
         id,
-        { ...userDetails, roles: rolesFind },
+        { ...updateRoleDto },
       );
 
       return userUpdate;

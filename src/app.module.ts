@@ -6,6 +6,7 @@ import { JoiValidationSchema } from './config/joi.validation';
 import { UserModule } from './modules/user/user.module';
 import { RoleModule } from './modules/role/role.module';
 import { CommonModule } from './common/common.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CommonModule } from './common/common.module';
     CommonModule,
     RoleModule,
     UserModule,
+    AuthModule,
 
   ],
 })

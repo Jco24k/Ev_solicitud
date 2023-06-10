@@ -6,7 +6,7 @@ import { CreateUserDto } from '../dto/create/create-user.dto';
 import { UpdateUserDto } from '../dto/update-User.dto';
 import { GetOneOptions } from 'src/common/interfaces/get.one.options.interface';
 import { CreateUserCompleteDto } from '../dto/create/create-user-complete.dto';
-// import { GetOneByIdOptions } from 'src/common/interfaces/get-one-by-id-options.interface';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserRepository {
@@ -38,12 +38,17 @@ export class UserRepository {
         return User;
     }
     async create(createUserDto: CreateUserCompleteDto) {
-        return await this.userRepository.save(createUserDto);
+        const { password, ...userDetails } = createUserDto
+        return await this.userRepository.save({
+            ...userDetails,
+            password: bcrypt.hashSync(password, 10)
+        });
     }
 
     async update(id: string, updateUserDto: UpdateUserDto) {
         const userfind = await this.getOne({ id });
-        updateUserDto.isActive = userfind.isActive;
+        updateUserDto.isActive = userfind.isActive
+        if (updateUserDto.password) updateUserDto.password = bcrypt.hashSync(updateUserDto.password, 10)
         await this.userRepository.save({
             ...userfind,
             ...updateUserDto
@@ -57,7 +62,18 @@ export class UserRepository {
         user.isActive = isActive;
         await this.userRepository.save(user);
         return {
-            message: `User ${!isActive?'deleted':'restored' } successfully `
-          }
+            message: `User ${!isActive ? 'deleted' : 'restored'} successfully `
+        }
+    }
+
+
+
+
+    async authLogin(email: string) {
+        const user = await this.userRepository.findOne({
+            where: { email },
+            select: { email: true, password: true, id: true }
+        })
+        return user;
     }
 }
