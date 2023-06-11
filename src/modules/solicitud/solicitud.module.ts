@@ -4,6 +4,7 @@ import { SolicitudController } from './controller/solicitud.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Solicitud } from './entities/solicitud.entity';
 import { SolicitudRepository } from './repository/solicitud.repository';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [SolicitudController],
@@ -11,7 +12,8 @@ import { SolicitudRepository } from './repository/solicitud.repository';
   imports: [
     TypeOrmModule.forFeature([
       Solicitud
-    ])
+    ]),
+    AuthModule
   ],
   exports: [
     TypeOrmModule, SolicitudRepository

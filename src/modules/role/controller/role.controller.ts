@@ -2,17 +2,20 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, P
 import { RoleService } from '../services/role.service';
 import { CreateRoleDto } from '../dto/create-role.dto';
 import { UpdateRoleDto } from '../dto/update-role.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Role } from '../entities/Role.entity';
 import { PaginationQueryParams } from 'src/common/dto/pagination-query-params.dto';
 import { CurrentPath } from 'src/common/interfaces/current.path.interface';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Roles } from 'src/common/interfaces/roles.enum';
 
 @ApiTags(CurrentPath.ROLE.toUpperCase())
 @Controller(CurrentPath.ROLE)
+@ApiBearerAuth()
 export class RoleController {
   constructor(private readonly roleService: RoleService) { }
 
-
+  @Auth({ roles: [Roles.ADMINISTRADOR] })
   @ApiResponse({
     status: HttpStatus.CREATED,
     type: Role,
@@ -26,6 +29,8 @@ export class RoleController {
     return await this.roleService.create(createRoleDto);
   }
 
+
+  @Auth({ roles: [Roles.ADMINISTRADOR] })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Data sent incorrectly',
@@ -39,6 +44,7 @@ export class RoleController {
     return this.roleService.getAll(paginationQueryParams);
   }
 
+  @Auth({ roles: [Roles.ADMINISTRADOR] })
   @ApiResponse({
     status: HttpStatus.OK,
     type: Role,
@@ -47,11 +53,12 @@ export class RoleController {
     status: HttpStatus.NOT_FOUND,
   })
   @Get(':id')
-  getOneById(@Param('id',ParseUUIDPipe) id: string) {
+  getOneById(@Param('id', ParseUUIDPipe) id: string) {
     return this.roleService.getOneById(id);
   }
 
 
+  @Auth({ roles: [Roles.ADMINISTRADOR] })
   @ApiResponse({
     status: HttpStatus.OK,
     type: Role,
@@ -68,7 +75,7 @@ export class RoleController {
     return await this.roleService.update(id, updateRoleDto);
   }
 
-
+  @Auth({ roles: [Roles.ADMINISTRADOR] })
   @ApiResponse({
     status: HttpStatus.OK,
   })
@@ -80,7 +87,7 @@ export class RoleController {
     return await this.roleService.changeState(id, false);
   }
 
-
+  @Auth({ roles: [Roles.ADMINISTRADOR] })
   @ApiResponse({
     status: HttpStatus.OK,
   })

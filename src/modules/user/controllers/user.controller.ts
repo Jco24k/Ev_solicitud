@@ -2,18 +2,21 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, P
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../entities/User.entity';
 import { PaginationQueryParams } from 'src/common/dto/pagination-query-params.dto';
 import { CurrentPath } from 'src/common/interfaces/current.path.interface';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { Roles } from 'src/common/interfaces/roles.enum';
 
 @ApiTags(CurrentPath.USER.toUpperCase())
 @Controller(CurrentPath.USER)
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
-  
+  @Auth({ roles: [Roles.ADMINISTRADOR] })
   @ApiResponse({
     status: HttpStatus.CREATED,
     type: User,
@@ -27,6 +30,7 @@ export class UserController {
     return await this.userService.create(createUserDto);
   }
 
+  @Auth({ roles: [Roles.ADMINISTRADOR] })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Data sent incorrectly',
@@ -40,6 +44,7 @@ export class UserController {
     return this.userService.getAll(paginationQueryParams);
   }
 
+  @Auth({ roles: [Roles.ADMINISTRADOR], sameUser: true })
   @ApiResponse({
     status: HttpStatus.OK,
     type: User,
@@ -52,6 +57,7 @@ export class UserController {
     return this.userService.getOneById(id);
   }
 
+  @Auth({ roles: [Roles.ADMINISTRADOR], sameUser: true })
   @ApiResponse({
     status: HttpStatus.OK,
     type: User,
@@ -62,12 +68,13 @@ export class UserController {
   })
   @Patch(':id')
   async update(
-    @Param('id',ParseUUIDPipe) id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return await this.userService.update(id, updateUserDto);
   }
 
+  @Auth({ roles: [Roles.ADMINISTRADOR] })
   @ApiResponse({
     status: HttpStatus.OK,
   })
@@ -75,10 +82,12 @@ export class UserController {
     status: HttpStatus.NOT_FOUND,
   })
   @Delete(':id')
-  async delete(@Param('id',ParseUUIDPipe) id: string) {
-    return await this.userService.changeState(id,false);
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.userService.changeState(id, false);
   }
 
+
+  @Auth({ roles: [Roles.ADMINISTRADOR] })
   @ApiResponse({
     status: HttpStatus.OK,
   })
@@ -86,7 +95,7 @@ export class UserController {
     status: HttpStatus.NOT_FOUND,
   })
   @Put('restore/:id')
-  async restore(@Param('id',ParseUUIDPipe) id: string) {
-    return await this.userService.changeState(id,true);
+  async restore(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.userService.changeState(id, true);
   }
 }

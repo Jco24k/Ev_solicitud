@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Roles } from 'src/common/interfaces/roles.enum';
 import { User } from 'src/modules/user/entities/User.entity';
 import { META_ROLES } from '../decorators/role-protected.decorator';
+import { META_USER } from '../decorators/user-protected.decorator';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
@@ -17,12 +18,23 @@ export class UserRoleGuard implements CanActivate {
         context: ExecutionContext,
     ): boolean | Promise<boolean> | Observable<boolean> {
         const validRoles: Roles[] = this.reflector.get(META_ROLES, context.getHandler());
-        if (!validRoles || validRoles.length == 0) return true;
+        const sameUser: boolean = this.reflector.get(META_USER, context.getHandler());
         const req = context.switchToHttp().getRequest();
         const user: User = req.user;
+
         if (!user) throw new InternalServerErrorException('User not found (request)');
+        if (!validRoles || validRoles.length == 0) return true;
         for (const role of user.roles)
             if (validRoles.includes(role.name)) return true;
+
+        if (sameUser) {
+            const idParam: string = req.params.id;
+            if (idParam !== user.id) {
+                throw new ForbiddenException('You are not allowed to perform this action on another user');
+            }
+            return true;
+        }
+
         throw new ForbiddenException(`User with ${user.id} need a valid role`)
     }
 }

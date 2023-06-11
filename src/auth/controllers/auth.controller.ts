@@ -1,10 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpCode, UseGuards, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Post, Body ,HttpStatus, HttpCode } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { ApiResponse } from '@nestjs/swagger';
 import { AuthResponseDto } from '../dto/auth-response.dto';
 import { AuthDto } from '../dto/auth.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { UserSameGuard } from '../guards/user-same.guard';
+
 
 @Controller('auth')
 export class AuthController {
@@ -31,9 +30,4 @@ export class AuthController {
     return await this.authService.authLogin(authDto);
   }
 
-  @UseGuards(AuthGuard(), UserSameGuard)
-  @Get(':id')
-  async test(@Param('id',ParseUUIDPipe) id: string) {
-    return true
-  }
 }
