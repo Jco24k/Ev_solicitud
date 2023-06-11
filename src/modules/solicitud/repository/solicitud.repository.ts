@@ -16,13 +16,11 @@ export class SolicitudRepository {
         take?: number,
         skip?: number,
         whereOptions?: FindOptionsWhere<Solicitud> | FindOptionsWhere<Solicitud>[],
-        orderOptions?: FindOptionsOrder<Solicitud>
     ) {
         return await this.solicitudRepository.find({
             where: whereOptions,
             skip,
             take,
-            // order: orderOptions
         });
     }
     async getOne({

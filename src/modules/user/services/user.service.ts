@@ -43,8 +43,8 @@ export class UserService {
       (state == 'active') ? { isActive: true } :
         (state == 'inactive') ? { isActive: false } :
           {};
-    const skip = page_number > query.min_page ?
-      page_number * page_size : 0;
+
+    const skip = page_number > query.min_page ? (page_number - 1) * page_size : 0;
     const take = page_size;
     return await this.userRepository.getAll(take, skip,
       { ...isActiveOptions },

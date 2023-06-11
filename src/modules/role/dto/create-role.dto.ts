@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsBoolean, IsIn, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
 import { Roles } from "src/common/interfaces/roles.enum";
 
 export class CreateRoleDto {
@@ -13,6 +13,7 @@ export class CreateRoleDto {
     @IsString()
     @MaxLength(40)
     @IsNotEmpty()
+    @IsIn(Object.values(Roles), { message: 'Roles is not valid"' })
     name: Roles;
 
 
