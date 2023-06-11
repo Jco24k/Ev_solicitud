@@ -2,10 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, P
 import { UserService } from '../services/user.service';
 import { CreateUserDto } from '../dto/create/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
-import { ApiResponse } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '../entities/User.entity';
 import { PaginationQueryParams } from 'src/common/dto/pagination-query-params.dto';
+import { CurrentPath } from 'src/common/interfaces/current.path.interface';
 
+@ApiTags(CurrentPath.USER.toUpperCase())
+@Controller(CurrentPath.USER)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

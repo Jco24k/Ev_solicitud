@@ -45,7 +45,7 @@ export class RoleService {
   }
 
   async getOneById(id: string) {
-    return await this.roleRepository.getOne({ id });
+    return await this.roleRepository.getOne({ where: { id: id } });
   }
 
   async update(id: string, updateRoleDto: UpdateRoleDto) {

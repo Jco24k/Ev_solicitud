@@ -27,11 +27,11 @@ export class UserRepository {
         });
     }
     async getOne({
-        id,
+        where,
         error = true,
-    }: GetOneOptions<string>) {
+    }: GetOneOptions<User>) {
         const User = await this.userRepository.findOne({
-            where: { id },
+            where: where,
         });
         if (!User && error)
             throw new NotFoundException('User not found');
@@ -46,7 +46,7 @@ export class UserRepository {
     }
 
     async update(id: string, updateUserDto: UpdateUserDto) {
-        const userfind = await this.getOne({ id });
+        const userfind = await this.getOne({ where: { id } });
         updateUserDto.isActive = userfind.isActive
         if (updateUserDto.password) updateUserDto.password = bcrypt.hashSync(updateUserDto.password, 10)
         await this.userRepository.save({
@@ -58,7 +58,7 @@ export class UserRepository {
         }
     }
     async changeState(id: string, isActive: boolean) {
-        const user = await this.getOne({ id });
+        const user = await this.getOne({ where: { id } });
         user.isActive = isActive;
         await this.userRepository.save(user);
         return {

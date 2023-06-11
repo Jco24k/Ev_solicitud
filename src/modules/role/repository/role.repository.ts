@@ -27,11 +27,11 @@ export class RoleRepository {
         });
     }
     async getOne({
-        id,
+        where,
         error = true,
-    }: GetOneOptions<string>) {
+    }: GetOneOptions<Role>) {
         const role = await this.roleRepository.findOne({
-            where: { id },
+            where: where,
         });
         if (!role && error)
             throw new NotFoundException('Role not found');
@@ -41,7 +41,7 @@ export class RoleRepository {
         return await this.roleRepository.save(createRoleDto);
     }
     async update(id: string, updateRoleDto: UpdateRoleDto) {
-        const role = await this.getOne({ id });
+        const role = await this.getOne({ where: { id } });
         updateRoleDto.isActive = role.isActive;
         await this.roleRepository.update({ id }, {
             ...updateRoleDto
@@ -52,7 +52,7 @@ export class RoleRepository {
         }
     }
     async changeState(id: string, isActive: boolean) {
-        const role = await this.getOne({ id });
+        const role = await this.getOne({ where: { id } });
         role.isActive = isActive;
         await this.roleRepository.save(role);
         return {

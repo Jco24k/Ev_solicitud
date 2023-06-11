@@ -1,29 +1,29 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, Query, ParseUUIDPipe, Put } from '@nestjs/common';
-import { RoleService } from '../services/role.service';
-import { CreateRoleDto } from '../dto/create-role.dto';
-import { UpdateRoleDto } from '../dto/update-role.dto';
+import { CreateSolicitudDto } from '../dto/create-solicitud.dto';
+import { UpdateSolicitudDto } from '../dto/update-solicitud.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Role } from '../entities/Role.entity';
+import { Solicitud } from '../entities/solicitud.entity';
 import { PaginationQueryParams } from 'src/common/dto/pagination-query-params.dto';
 import { CurrentPath } from 'src/common/interfaces/current.path.interface';
+import { SolicitudService } from '../services/solicitud.service';
 
-@ApiTags(CurrentPath.ROLE.toUpperCase())
-@Controller(CurrentPath.ROLE)
-export class RoleController {
-  constructor(private readonly roleService: RoleService) { }
+@ApiTags(CurrentPath.SOLICITUD.toUpperCase())
+@Controller(CurrentPath.SOLICITUD)
+export class SolicitudController {
+  constructor(private readonly solicitudService: SolicitudService) {}
 
-
+ 
   @ApiResponse({
     status: HttpStatus.CREATED,
-    type: Role,
+    type: Solicitud,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
     description: 'Data sent incorrectly',
   })
   @Post()
-  async create(@Body() createRoleDto: CreateRoleDto) {
-    return await this.roleService.create(createRoleDto);
+  async create(@Body() createSolicitudDto: CreateSolicitudDto) {
+    return await this.solicitudService.create(createSolicitudDto);
   }
 
   @ApiResponse({
@@ -32,29 +32,29 @@ export class RoleController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    type: [Role],
+    type: [Solicitud],
   })
   @Get()
   getAll(@Query() paginationQueryParams: PaginationQueryParams) {
-    return this.roleService.getAll(paginationQueryParams);
+    return this.solicitudService.getAll(paginationQueryParams);
   }
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: Role,
+    type: Solicitud,
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
   })
-  @Get(':id')
-  getOneById(@Param('id',ParseUUIDPipe) id: string) {
-    return this.roleService.getOneById(id);
+  @Get(':search')
+  getOne(@Param('search') search: string) {
+    return this.solicitudService.getOne(search);
   }
 
 
   @ApiResponse({
     status: HttpStatus.OK,
-    type: Role,
+    type: Solicitud,
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
@@ -62,10 +62,10 @@ export class RoleController {
   })
   @Patch(':id')
   async update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateRoleDto: UpdateRoleDto,
+    @Param('id',ParseUUIDPipe) id: string,
+    @Body() updateSolicitudDto: UpdateSolicitudDto,
   ) {
-    return await this.roleService.update(id, updateRoleDto);
+    return await this.solicitudService.update(id, updateSolicitudDto);
   }
 
 
@@ -76,8 +76,8 @@ export class RoleController {
     status: HttpStatus.NOT_FOUND,
   })
   @Delete(':id')
-  async delete(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.roleService.changeState(id, false);
+  async delete(@Param('id',ParseUUIDPipe) id: string) {
+    return await this.solicitudService.changeState(id,false);
   }
 
 
@@ -88,8 +88,8 @@ export class RoleController {
     status: HttpStatus.NOT_FOUND,
   })
   @Put('restore/:id')
-  async restore(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.roleService.changeState(id, true);
+  async restore(@Param('id',ParseUUIDPipe) id: string) {
+    return await this.solicitudService.changeState(id,true);
   }
 
 }

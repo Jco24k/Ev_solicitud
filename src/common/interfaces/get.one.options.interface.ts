@@ -1,5 +1,7 @@
+import { FindOptionsWhere } from "typeorm";
+
 export interface GetOneOptions<T> {
-  id: string;
+  where: | FindOptionsWhere<T> | FindOptionsWhere<T>[];
   error?: boolean;
   relations?: boolean;
 }

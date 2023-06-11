@@ -7,6 +7,7 @@ import { UserModule } from './modules/user/user.module';
 import { RoleModule } from './modules/role/role.module';
 import { CommonModule } from './common/common.module';
 import { AuthModule } from './auth/auth.module';
+import { SolicitudModule } from './modules/solicitud/solicitud.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
     RoleModule,
     UserModule,
     AuthModule,
+    SolicitudModule,
 
   ],
 })

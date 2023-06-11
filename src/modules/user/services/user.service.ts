@@ -53,7 +53,9 @@ export class UserService {
   }
 
   async getOneById(id: string) {
-    return await this.userRepository.getOne({ id });
+    return await this.userRepository.getOne({
+      where: { id }
+    });
   }
 
   async update(id: string, updateRoleDto: UpdateUserDto) {

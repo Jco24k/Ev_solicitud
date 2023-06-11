@@ -1,6 +1,7 @@
 export enum CurrentPath{
-    role = 'role',
-    user = 'user',
-    auth = 'auth',
-    seed = 'seed',
+    ROLE = 'role',
+    USER = 'user',
+    SOLICITUD = 'solicitud',
+    AUTH = 'auth',
+    SEED = 'seed',
 }
